@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn import metrics
 
 Dataset = pd.read_csv('./2017EE10436.csv',header=None);
-num_features = 25
+num_features = 10
 F = Dataset.iloc[:,:num_features].values
 T = Dataset.iloc[:,-1].values
 
@@ -127,7 +127,7 @@ def svc_param_selection(X, y, nfolds=5):
 	print(grid_search_classifier.best_score_)
 	
 def hyperparameter_variation(X,Y):
-	Cs=[0.001,0.008,0.009,0.01,0.03,0.1,1,10]
+	Cs=[0.001,0.005,0.01,0.05,0.1,0.5,1,5,10]
 	train_mat=[]
 	test_mat=[]
 	cr_batch_size = int(X.shape[0]/cr_batches)
@@ -148,8 +148,13 @@ def hyperparameter_variation(X,Y):
 		train_mat.append(accuracy_cr_train/cr_batches)
 		test_mat.append(accuracy_cr_test/cr_batches)
 	plt.figure(figsize=(12,9))
-	plt.plot(np.log10(Cs),train_mat,c='b')
-	plt.plot(np.log10(Cs),test_mat,c='r')
+	plt.plot(np.log10(Cs),train_mat,c='b',label = 'Training accuracy')
+	plt.plot(np.log10(Cs),test_mat,c='r',label = 'Test accuracy')
+	plt.legend(loc='best')
+	plt.title('Variation of C for Linear kernel for '+str(num_features)+' and labels '+str(label1)+' and '+str(label2))
+	plt.xlabel('log10(C)')
+	plt.ylabel('Accuracy')
+	plt.savefig('./Pics/C_Variation_Linear'+str(num_features)+'_'+str(label1)+'_'+str(label2)+'.png')
 	plt.show()
 	
 #print_params_conv(F1_train,F1_test,T1_train,T1_test)
